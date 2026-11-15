@@ -1,0 +1,64 @@
+# Reconnect · This Is Random But…
+
+A mobile-first web prototype of **Reconnect**, the friendship photostrip tool for the
+*This Is Random But…* campaign (MSF Youth and Relationships brief, Ngee Ann Polytechnic IMP capstone).
+
+**Live site:** https://greengolbin.github.io/reconnect/
+
+> Student project prototype. Not an official MSF service.
+
+## What it does
+
+1. **Landing:** the perception-gap hook (73% vs 23%, our survey of 124 youths aged 17–25).
+2. **Start a photostrip:** friend's name, how long it's been, where you got close. No sign-up.
+3. **Send the invite:** personalised openers, editable, shared via Instagram / WhatsApp / Telegram / copy.
+4. **Friend's view:** what the friend sees when they open the link.
+5. **Stage 1 · now, Stage 2 · then, Stage 3 · next:** prompts with "ask back", photo upload, optional note, activity ideas matched to what you both wrote.
+6. **Waiting:** normal reply times, no "seen" receipts.
+7. **Photostrip done:** draws a 1080×1920 Story-sized image you can save or share (Photostrip Challenge).
+8. **Reconnecting FAQ:** searchable, curated tips, "use this as my opener".
+
+## Demo mode
+
+Everything is stored in the visitor's own browser (`localStorage`). Nothing is sent to a server,
+and the friend's replies are simulated (`js/store.js` → `waitForFriend`). Visitors can clear their
+data from the About page.
+
+## Editing copy
+
+All the words live in **`js/content.js`** (openers, prompts, activity ideas, FAQ, survey stats,
+disclaimer). Change text there; no other file needs to change.
+
+To confirm before launch: the campaign hashtag (`site.hashtag`, currently `#ThisIsRandomBut`).
+
+## Files
+
+| Path | What it is |
+| --- | --- |
+| `index.html` | Page shell, meta tags, link preview |
+| `css/styles.css` | Design tokens and components (matches the v2 Figma) |
+| `js/content.js` | All copy |
+| `js/store.js` | Data layer: demo store now, swap for a real backend later |
+| `js/app.js` | Screens and routing (hash routes, e.g. `#/start`) |
+| `js/photostrip.js` | Draws the downloadable photostrip |
+| `assets/` | Self-hosted fonts (Fredoka, DM Sans, Caveat), logo, characters, icons |
+
+No build step and no dependencies. GitHub Pages serves the files as they are.
+
+## Accessibility and performance
+
+- Text contrast meets WCAG 2.2 AA (Deep Plum on cream is 7.5:1); orange, yellow and coral are never used as text colours.
+- Tap targets 44–52 px, body text 16 px, visible keyboard focus, form labels, focus moves to each screen's heading.
+- Respects "reduce motion". Fonts are self-hosted (no third-party requests). First load is about 250 KB.
+- Automated checks: axe-core (WCAG 2.0/2.1/2.2 A and AA) reported no violations on every screen.
+
+## Path to the real two-person version (phase 2)
+
+`js/store.js` already defines the methods the screens use (`createStrip`, `getStrip`, `saveTurn`,
+`waitForFriend`, …). A real version replaces `DemoStore` with a class that calls a backend
+(e.g. Supabase, Singapore region) with:
+
+- private, unguessable links per strip and row-level security so only the two friends can read it;
+- photo storage with size limits;
+- realtime updates instead of the simulated reply;
+- a consent notice, PDPA-compliant retention (delete after the pilot) and opt-in sharing by both friends.
