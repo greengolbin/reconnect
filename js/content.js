@@ -37,15 +37,15 @@ export function openers({ friendName, gap, place }) {
   return [
     {
       tag: 'Something reminded me',
-      text: `this is random but… walked past our old bubble tea place and thought of you. how have you been?`,
+      text: `this is random but… walked past our old bubble tea place and thought of you. how’ve you been?`,
     },
     {
       tag: 'Honest and light',
-      text: `okay random, but ${long}I miss our ${where === 'back then' ? 'old' : where} chats. want to do a little throwback thing with me?`,
+      text: `okay random, but ${long}I miss our ${where === 'back then' ? 'old' : where} chats. up for a little throwback?`,
     },
     {
       tag: 'Lead with a memory',
-      text: `found an old photo of us from ${where}. made us a photostrip, your turn to add one, ${friendName}!`,
+      text: `found an old photo of us from ${where}. made us a photostrip, your turn ${friendName}!`,
     },
   ];
 }
@@ -86,14 +86,14 @@ export const formats = [
 // Activity ideas for stage 3. "match" words are looked for in what both of
 // you wrote; matching ideas are shown first.
 export const ideas = [
-  { id: 'sport', tag: 'In person', title: 'a game of badminton, then supper', why: 'Easy to chat between rounds', match: ['badminton', 'sport', 'gym', 'run', 'bouldering', 'climb', 'futsal', 'basketball'] },
+  { id: 'sport', tag: 'In person', title: 'badminton, then supper', why: 'Easy to chat between rounds', match: ['badminton', 'sport', 'gym', 'run', 'bouldering', 'climb', 'futsal', 'basketball'] },
   { id: 'cafe', tag: 'In person', title: 'a café catch-up', why: 'Low effort, easy to say yes to', match: ['coffee', 'kopi', 'cafe', 'café', 'bubble tea', 'boba', 'food', 'eat'] },
-  { id: 'old-school', tag: 'In person', title: 'walk past your old school, then bubble tea', why: 'Built on your stage 2 memory', match: ['school', 'canteen', 'class', 'cca', 'recess'] },
+  { id: 'old-school', tag: 'In person', title: 'old school walk + bubble tea', why: 'Built on your stage 2 memory', match: ['school', 'canteen', 'class', 'cca', 'recess'] },
   { id: 'hawker', tag: 'In person', title: 'hawker centre supper', why: 'Cheap, casual, no planning needed', match: ['hawker', 'supper', 'chicken rice', 'prata'] },
   { id: 'online', tag: 'Online', title: 'game night on a call', why: 'Good if your timetables keep clashing', match: ['game', 'valorant', 'minecraft', 'overseas', 'busy'] },
 ];
 
-export const times = ['this weekend', 'next week', 'after exams', 'pick a date later'];
+export const times = ['this weekend', 'next week', 'after exams'];
 
 // Demo mode only: what the simulated friend "replies" with.
 export const demoFriend = {
@@ -162,4 +162,4 @@ export const faq = [
   },
 ];
 
-export const faqCats = ['All', 'Starting', 'Awkward gaps', 'Keeping it going'];
+export const faqCats = ['Starting', 'Awkward gaps', 'Keeping it going'];

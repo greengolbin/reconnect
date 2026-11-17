@@ -5,10 +5,11 @@ import { renderPhotostrip } from './photostrip.js';
 const view = document.getElementById('app');
 const ASSETS = {
   logo: 'assets/img/logo.webp',
-  enc: 'assets/img/encourager.webp',
-  ovr: 'assets/img/overthinker.webp',
+  enc: 'assets/img/encourager.svg',
+  ovr: 'assets/img/overthinker.svg',
 };
 const ORDER = ['now', 'then', 'next'];
+const IG_DM = 'https://www.instagram.com/direct/inbox/';
 
 /* ---------------- helpers ---------------- */
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -21,8 +22,9 @@ const icon = {
   back: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   chevron: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m8 5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   search: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="m13.5 13.5 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
-  chat: '<svg viewBox="0 0 18 18" fill="none" aria-hidden="true" width="18" height="18"><path d="M3 4.5A2.5 2.5 0 0 1 5.5 2h7A2.5 2.5 0 0 1 15 4.5v5a2.5 2.5 0 0 1-2.5 2.5H8l-3.5 3v-3A1.5 1.5 0 0 1 3 10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
-  check: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="22" height="22"><circle cx="12" cy="12" r="11" fill="#69455B"/><path d="m7.5 12.5 3 3 6-6.5" stroke="#FFF6E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  chat: '<svg viewBox="0 0 18 18" fill="none" aria-hidden="true" width="16" height="16"><path d="M3 4.5A2.5 2.5 0 0 1 5.5 2h7A2.5 2.5 0 0 1 15 4.5v5a2.5 2.5 0 0 1-2.5 2.5H8l-3.5 3v-3A1.5 1.5 0 0 1 3 10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  pen: '<svg viewBox="0 0 18 18" fill="none" aria-hidden="true" width="16" height="16"><path d="M3 15l1-4 8-8 3 3-8 8-4 1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="20" height="20"><circle cx="12" cy="12" r="11" fill="#69455B"/><path d="m7.5 12.5 3 3 6-6.5" stroke="#FFF6E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   share: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   download: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   camera: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="1.8"/></svg>',
@@ -35,7 +37,7 @@ function toast(msg) {
   t.setAttribute('role', 'status');
   t.textContent = msg;
   document.body.append(t);
-  setTimeout(() => t.remove(), 3200);
+  setTimeout(() => t.remove(), 3000);
 }
 
 function shell({ title, back, body, actions = '', docTitle }) {
@@ -48,7 +50,7 @@ function shell({ title, back, body, actions = '', docTitle }) {
     : '';
   view.innerHTML = `${header}
     <div class="view">
-      <div class="content" id="main-content">${body}</div>
+      <div class="content" id="main-content" tabindex="-1">${body}</div>
       ${actions ? `<div class="actions">${actions}</div>` : ''}
     </div>`;
 }
@@ -62,11 +64,21 @@ function progress(current) {
 }
 
 const lockup = () => `<div class="lockup" aria-label="${esc(site.campaign)} ${esc(site.tagline)}">
-  <img src="${ASSETS.logo}" alt="" width="56" height="41"><span class="sep" aria-hidden="true"></span>
+  <img src="${ASSETS.logo}" alt="" width="48" height="35"><span class="sep" aria-hidden="true"></span>
   <span><span class="name">This Is<br>Random But…</span><span class="tag-line">${esc(site.tagline)}</span></span></div>`;
 
-const tip = (mascot, text) => `<div class="tip"><img src="${ASSETS[mascot]}" alt="" width="64" height="52"><p class="bubble bubble-them">${esc(text)}</p></div>`;
+const tip = (mascot, text) => `<div class="tip"><img src="${ASSETS[mascot]}" alt="" width="50" height="45"><p class="bubble bubble-them">${esc(text)}</p></div>`;
 const demoPill = () => MODE === 'demo' ? `<a class="demo-pill" href="#/about">Demo mode · nothing leaves this device</a>` : '';
+
+// One frame of the shared photostrip: what one person added at a stage.
+function frame({ who, stage, text, photo, isNew, plan }) {
+  const inner = plan
+    ? `<div class="inner plan"><span class="tag">the plan</span><span class="subheading">${esc(plan.idea)}</span><span class="small muted">${esc(plan.time)}</span></div>`
+    : photo
+      ? `<div class="inner"><img src="${photo}" alt="${esc(who)}’s photo"></div>`
+      : `<div class="inner">${esc(text || '')}</div>`;
+  return `<figure class="frame ${isNew ? 'new' : ''}">${inner}<figcaption>${esc(stage)} · ${esc(who)}</figcaption></figure>`;
+}
 
 async function compressImage(file, max = 1000) {
   const bmp = await createImageBitmap(file);
@@ -83,8 +95,8 @@ async function getStripOr404(id) {
   if (!s) {
     shell({
       title: 'photostrip', back: '#/',
-      body: `<h1 class="heading" tabindex="-1">we couldn’t find this photostrip</h1>
-        <p class="muted">This is a demo, so photostrips only live on the phone or laptop that made them. In the real version, this link would open the shared strip on any phone.</p>
+      body: `<h1 class="heading">we couldn’t find this photostrip</h1>
+        <p class="muted" style="margin:0">This is a demo, so photostrips only live on the phone or laptop that made them. In the real version, this link would open the shared strip on any phone.</p>
         ${tip('ovr', 'no stress. you can start a new one in a minute.')}`,
       actions: `<a class="btn btn-primary" href="#/start">Start a photostrip</a>`,
     });
@@ -96,22 +108,23 @@ async function getStripOr404(id) {
 async function landing() {
   const strips = await store.listStrips();
   const open = strips.find((s) => s.stage !== 'done');
+  const resumeRow = open
+    ? `<a class="list-row" href="#/s/${open.id}">Continue your photostrip with ${esc(open.friendName)} ${icon.chevron}</a>`
+    : strips.length ? `<a class="list-row" href="#/strips">Your photostrips (${strips.length}) ${icon.chevron}</a>` : '';
   shell({
     docTitle: 'Reconnect',
     body: `${demoPill()}
       ${lockup()}
-      <div class="hero" aria-hidden="true"><img src="${ASSETS.ovr}" alt="" width="104" height="96"><img src="${ASSETS.enc}" alt="" width="124" height="100"></div>
-      <h1 class="display" tabindex="-1">thinking of texting an <span class="highlight">old friend?</span></h1>
-      <p class="body muted">They’re probably hoping to hear from you too. Reconnect makes going first feel a little less random, in three small steps.</p>
+      <div class="hero" aria-hidden="true"><img src="${ASSETS.ovr}" alt="" width="78" height="85"><img src="${ASSETS.enc}" alt="" width="96" height="87"></div>
+      <h1 class="display">thinking of texting an <span class="highlight">old friend?</span></h1>
+      <p class="body muted" style="margin:0">They’re probably hoping to hear from you too. Reconnect makes going first feel a little less random, in three small steps.</p>
       <div class="card stat"><span class="stat-num">${stats.pleased}%</span>
-        <div class="stack-sm"><p class="label">of youths we surveyed would be really happy if an old friend texted first. Only ${stats.thinkSame}% think their friend feels the same.</p>
+        <div class="stack-sm" style="gap:4px"><p class="label" style="font-size:13px;line-height:18px">of youths we surveyed would be really happy if an old friend texted first. Only ${stats.thinkSame}% think their friend feels the same.</p>
         <p class="caption" style="text-transform:none;letter-spacing:0">Our survey of ${stats.n} youths aged 17 to 25</p></div></div>
-      ${open ? `<a class="list-row" href="#/s/${open.id}">Continue your photostrip with ${esc(open.friendName)} ${icon.chevron}</a>` : ''}
-      ${strips.length ? `<a class="list-row" href="#/strips">Your photostrips (${strips.length}) ${icon.chevron}</a>` : ''}
-`,
+      ${resumeRow}`,
     actions: `<a class="btn btn-primary" href="#/start">Start a photostrip</a>
       <a class="btn btn-tertiary" href="#/faq">Not ready? Read the reconnecting tips</a>
-      <p class="footer-note" style="padding:4px 0 0">${esc(site.disclaimer)} <a href="#/about">About this prototype</a></p>`,
+      <p class="footer-note">Student prototype, not an official MSF service. <a href="#/about">About</a></p>`,
   });
 }
 
@@ -119,16 +132,20 @@ async function landing() {
 async function start() {
   const pre = JSON.parse(sessionStorage.getItem('reconnect.prefill') || '{}');
   const radios = (name, opts, checked) => opts.map((o) => `<label class="chip"><input type="radio" name="${name}" value="${esc(o.id)}" ${o.id === checked ? 'checked' : ''}><span>${esc(o.label)}</span></label>`).join('');
+  let me = '';
+  try { me = localStorage.getItem('reconnect.me') || ''; } catch {}
   shell({
     title: 'start a photostrip', back: '#/',
-    body: `<h1 class="heading" tabindex="-1">who’ve you been meaning to text?</h1>
-      <p class="body muted">Just a first name or nickname. No sign-up needed.</p>
-      <form id="start-form" class="stack-sm" style="gap:20px" novalidate>
-        <div class="field"><label class="label" for="friend">Their name</label>
-          <input class="input" id="friend" name="friend" autocomplete="off" maxlength="30" required placeholder="e.g. Wei Ling" value="${esc(pre.friendName || '')}" aria-describedby="friend-err">
-          <p class="error" id="friend-err" hidden>Add their name so we can personalise your message.</p></div>
-        <div class="field"><label class="label" for="me">Your first name <span class="muted">(optional, so they know it’s you)</span></label>
-          <input class="input" id="me" name="me" autocomplete="given-name" maxlength="30" placeholder="e.g. Jia Hui" value="${esc(localStorage.getItem('reconnect.me') || '')}"></div>
+    body: `<div class="stack-sm" style="gap:2px"><h1 class="heading">who’ve you been meaning to text?</h1>
+      <p class="body muted" style="margin:0">First names are enough. No sign-up needed.</p></div>
+      <form id="start-form" class="stack-sm" style="gap:14px" novalidate>
+        <div class="two-col">
+          <div class="field"><label class="label" for="friend">Their name</label>
+            <input class="input" id="friend" name="friend" autocomplete="off" maxlength="30" required placeholder="Wei Ling" value="${esc(pre.friendName || '')}" aria-describedby="friend-err"></div>
+          <div class="field"><label class="label" for="me">You <span class="muted">(optional)</span></label>
+            <input class="input" id="me" name="me" autocomplete="given-name" maxlength="30" placeholder="Jia Hui" value="${esc(me)}"></div>
+        </div>
+        <p class="error" id="friend-err" hidden>Add their name so we can personalise your message.</p>
         <fieldset class="chips"><legend>Last proper chat was…</legend>${radios('gap', gapOptions, pre.gap || 'year')}</fieldset>
         <fieldset class="chips"><legend>You two got close at…</legend>${radios('place', placeOptions, pre.place || 'secondary school')}</fieldset>
       </form>
@@ -145,11 +162,11 @@ async function start() {
       $('#friend').focus();
       return;
     }
-    const me = String(f.get('me') || '').trim();
-    localStorage.setItem('reconnect.me', me);
+    const myName = String(f.get('me') || '').trim();
+    try { localStorage.setItem('reconnect.me', myName); } catch {}
     sessionStorage.removeItem('reconnect.prefill');
     const s = await store.createStrip({ friendName, gap: f.get('gap'), place: f.get('place') });
-    await store.updateStrip(s.id, { myName: me });
+    await store.updateStrip(s.id, { myName });
     go(`#/s/${s.id}/invite`);
   });
 }
@@ -162,35 +179,41 @@ async function invite(id) {
   const list = openers(s);
   if (custom) list.unshift({ tag: 'From the tips', text: custom });
   let sel = 0;
+  const texts = list.map((o) => o.text);
   shell({
     title: 'send the invite', back: '#/start',
-    body: `<h1 class="heading" tabindex="-1">pick an opener</h1>
-      <p class="body muted">Short and specific works best. Tap one, then edit it to sound like you.</p>
-      <div role="radiogroup" aria-label="Opening messages" class="stack-sm" style="gap:12px">
-        ${list.map((o, i) => `<button type="button" role="radio" aria-checked="${i === 0}" class="bubble bubble-me opener" data-i="${i}">
-          ${i === 0 ? `<span class="tick">${icon.check}</span>` : '<span class="tick"></span>'}<span class="who">${esc(o.tag)}</span>${esc(o.text)}</button>`).join('')}
-      </div>
-      <div class="field"><label class="label" for="msg">Your message</label>
-        <textarea class="textarea" id="msg" maxlength="400">${esc(list[0].text)}</textarea>
-        <p class="hint">Your photostrip link is added automatically.</p></div>`,
+    body: `<div class="stack-sm" style="gap:2px"><h1 class="heading">pick an opener</h1>
+      <p class="body muted" style="margin:0">Tap one, make it sound like you, then send. Your link is added for you.</p></div>
+      <div aria-label="Opening messages" role="group" class="stack-sm" id="openers" style="gap:8px"></div>`,
     actions: `<button class="btn btn-primary" id="send-main" type="button">Send on Instagram</button>
       <div class="row"><button class="btn btn-tertiary" data-app="whatsapp" type="button">WhatsApp</button>
       <button class="btn btn-tertiary" data-app="telegram" type="button">Telegram</button>
       <button class="btn btn-tertiary" data-app="copy" type="button">Copy</button></div>`,
   });
-  const msg = $('#msg');
-  $$('.opener').forEach((b) => b.addEventListener('click', () => {
-    sel = +b.dataset.i;
-    $$('.opener').forEach((x, i) => {
-      x.setAttribute('aria-checked', String(i === sel));
-      x.querySelector('.tick').innerHTML = i === sel ? icon.check : '';
-    });
-    msg.value = list[sel].text;
-  }));
-  const full = () => `${msg.value.trim()}\n${linkTo(id)}`;
+  const box = $('#openers');
+  const draw = () => {
+    box.innerHTML = list.map((o, i) => i === sel
+      ? `<div class="bubble bubble-me opener" aria-current="true" data-i="${i}">
+          <span class="tick">${icon.check}</span><label class="who" for="msg">${esc(o.tag)} · tap to edit</label>
+          <textarea id="msg" class="opener-edit" maxlength="400" rows="3">${esc(texts[i])}</textarea></div>`
+      : `<button type="button" class="bubble bubble-me opener" data-i="${i}" aria-label="Use this opener: ${esc(texts[i])}">
+          <span class="who">${esc(o.tag)}</span>${esc(texts[i])}</button>`).join('');
+    $$('button.opener', box).forEach((b) => b.addEventListener('click', () => {
+      sel = +b.dataset.i;
+      draw();
+      $('#msg').focus();
+    }));
+    const ta = $('#msg');
+    const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+    ta.addEventListener('input', () => { texts[sel] = ta.value; fit(); });
+    fit();
+  };
+  draw();
+  const message = () => texts[sel].trim();
+  const full = () => `${message()}\n${linkTo(id)}`;
   const done = async () => {
     sessionStorage.removeItem('reconnect.opener');
-    await store.updateStrip(id, { opener: msg.value.trim(), stage: s.stage === 'invite' ? 'now' : s.stage });
+    await store.updateStrip(id, { opener: message(), stage: s.stage === 'invite' ? 'now' : s.stage });
     go(`#/s/${id}/sent`);
   };
   const copy = async () => {
@@ -198,17 +221,17 @@ async function invite(id) {
   };
   $('#send-main').addEventListener('click', async () => {
     if (navigator.share) {
-      try { await navigator.share({ text: msg.value.trim(), url: linkTo(id) }); return done(); } catch (e) { if (e.name === 'AbortError') return; }
+      try { await navigator.share({ text: message(), url: linkTo(id) }); return done(); } catch (e) { if (e.name === 'AbortError') return; }
     }
     const ok = await copy();
     toast(ok ? 'Message copied. Paste it into your Instagram DM.' : 'Copy your message, then paste it into Instagram.');
-    window.open('https://www.instagram.com/direct/inbox/', '_blank', 'noopener');
+    window.open(IG_DM, '_blank', 'noopener');
     done();
   });
   $$('[data-app]').forEach((b) => b.addEventListener('click', async () => {
     const a = b.dataset.app;
     if (a === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(full())}`, '_blank', 'noopener');
-    if (a === 'telegram') window.open(`https://t.me/share/url?url=${encodeURIComponent(linkTo(id))}&text=${encodeURIComponent(msg.value.trim())}`, '_blank', 'noopener');
+    if (a === 'telegram') window.open(`https://t.me/share/url?url=${encodeURIComponent(linkTo(id))}&text=${encodeURIComponent(message())}`, '_blank', 'noopener');
     if (a === 'copy') toast((await copy()) ? 'Copied. Paste it wherever you chat.' : 'Couldn’t copy automatically. Select the text and copy it.');
     done();
   }));
@@ -220,14 +243,15 @@ async function sent(id) {
   if (!s) return;
   shell({
     title: 'invite sent', back: `#/s/${id}/invite`,
-    body: `<h1 class="display" tabindex="-1">sent. that’s the hardest part done.</h1>
-      <p class="body muted">${esc(s.friendName)} gets your message with a link to your shared photostrip. You go first on stage 1, then it’s their turn.</p>
+    body: `<h1 class="display">sent. that’s the hardest part done.</h1>
+      <p class="body muted" style="margin:0">${esc(s.friendName)} gets your message in their DMs, with a link to your shared photostrip. You add the first frame, then it’s their turn.</p>
       <div class="polaroids" aria-hidden="true">
         <figure class="polaroid tilt-l" style="margin:0"><div class="ph empty">+</div><figcaption>now</figcaption></figure>
-        <figure class="polaroid tilt-r" style="margin:0"><div class="ph empty">+</div><figcaption>then</figcaption></figure></div>
-      ${MODE === 'demo' ? `<p class="notice">Demo: in the real version, ${esc(s.friendName)} opens the link on their own phone. Here you can preview what they’d see, and their replies are simulated.</p>` : ''}`,
-    actions: `<a class="btn btn-primary" href="#/s/${id}/stage/now">Start stage 1</a>
-      <a class="btn btn-secondary" href="#/s/${id}/friend">Preview what ${esc(s.friendName)} sees</a>`,
+        <figure class="polaroid" style="margin:0"><div class="ph empty">+</div><figcaption>then</figcaption></figure>
+        <figure class="polaroid tilt-r" style="margin:0"><div class="ph empty">+</div><figcaption>next</figcaption></figure></div>
+      ${MODE === 'demo' ? `<p class="notice">Demo: ${esc(s.friendName)}’s side is simulated. Tap “preview” to see what the link opens for them.</p>` : ''}`,
+    actions: `<a class="btn btn-primary" href="#/s/${id}/stage/now">Add the first frame</a>
+      <a class="btn btn-tertiary" href="#/s/${id}/friend">Preview what ${esc(s.friendName)} sees</a>`,
   });
 }
 
@@ -239,17 +263,16 @@ async function friendView(id) {
   const nowMe = s.turns.now?.me;
   shell({
     docTitle: `${sender} wants to reconnect`,
-    body: `${MODE === 'demo' ? `<p class="notice">Preview: this is what ${esc(s.friendName)} sees after tapping your link.</p>` : ''}
-      <div class="card" style="display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)">
-        <img src="${ASSETS.logo}" alt="" width="40" height="30">
-        <div><p class="caption">New message</p><p class="label">${esc(sender)}</p><p class="small muted" style="margin:0">${esc(s.opener || openers(s)[0].text)}</p></div></div>
-      <h1 class="display" tabindex="-1">${esc(sender)} wants to pick up where you left off.</h1>
-      <p class="body muted">They started a photostrip for you two. Three short stages, at your own pace.</p>
+    body: `${MODE === 'demo' ? `<p class="notice">Preview: what ${esc(s.friendName)} sees after tapping your link.</p>` : ''}
+      <div class="card" style="display:flex;gap:10px;align-items:center;box-shadow:var(--shadow)">
+        <img src="${ASSETS.logo}" alt="" width="36" height="27">
+        <div><p class="caption">${esc(sender)} sent you</p><p class="small" style="margin:0">${esc(s.opener || openers(s)[0].text)}</p></div></div>
+      <h1 class="display">${esc(sender)} wants to pick up where you left off.</h1>
       <div class="polaroids" aria-hidden="true">
         <figure class="polaroid tilt-l" style="margin:0"><div class="ph ${nowMe ? '' : 'empty'}">${nowMe?.photo ? `<img src="${nowMe.photo}" alt="">` : nowMe ? '' : '+'}</div><figcaption>now${nowMe ? ' · ' + esc(sender) : ''}</figcaption></figure>
         <figure class="polaroid" style="margin:0"><div class="ph empty">+</div><figcaption>then</figcaption></figure>
         <figure class="polaroid tilt-r" style="margin:0"><div class="ph empty">+</div><figcaption>next</figcaption></figure></div>
-      ${tip('enc', 'they went first. you just add one thing back.')}`,
+      ${tip('enc', 'they started a photostrip for you two. just add one thing back.')}`,
     actions: `<button class="btn btn-primary" id="add-part" type="button">Add my part</button>
       <a class="btn btn-tertiary" href="#/s/${id}">${MODE === 'demo' ? 'Back to my side (demo)' : 'Maybe later (they won’t be told)'}</a>`,
   });
@@ -263,38 +286,32 @@ async function stageView(id, key) {
   if (key === 'next') return nextStage(s);
   const st = stages[key];
   const prevKey = ORDER[ORDER.indexOf(key) - 1];
-  const prevFriend = prevKey && s.turns[prevKey]?.friend?.text;
   const mine = s.turns[key]?.me || {};
   let photo = mine.photo || null;
   shell({
     title: `stage ${st.n} · ${st.label}`, back: prevKey ? `#/s/${id}/wait/${prevKey}` : `#/s/${id}/sent`,
     body: `${progress(key)}
-      <div class="stack-sm" style="gap:4px"><h1 class="heading" tabindex="-1">${esc(st.title)}</h1>
-      <p class="body muted">${key === 'now' ? `You go first. ${esc(s.friendName)} answers next.` : 'Your turn to start this one.'}</p></div>
-      ${prevFriend ? `<p class="bubble bubble-them"><span class="who">${esc(s.friendName)}</span>${esc(prevFriend)}</p>` : ''}
-      <form id="turn" class="card card-yellow stack-sm" style="gap:12px" novalidate>
-        <p class="caption">Your turn · stage ${st.n} of 3</p>
+      <div class="stack-sm" style="gap:2px"><h1 class="heading">${esc(st.title)}</h1>
+      <p class="body muted" style="margin:0">${key === 'now' ? `You add the first frame. ${esc(s.friendName)} adds theirs next.` : 'Your turn to start this one.'}</p></div>
+      <form id="turn" class="card card-yellow stack-sm" style="gap:10px" novalidate>
         <label class="subheading" for="answer">${esc(st.question)}</label>
-        <fieldset class="chips" aria-label="How do you want to answer?">${formats.map((f, i) => `<label class="chip"><input type="radio" name="format" value="${f.id}" ${(mine.format || 'text') === f.id ? 'checked' : ''}><span>${f.label}</span></label>`).join('')}</fieldset>
+        <fieldset class="chips scroll" aria-label="How do you want to answer?">${formats.map((f) => `<label class="chip"><input type="radio" name="format" value="${f.id}" ${(mine.format || 'text') === f.id ? 'checked' : ''}><span>${f.label}</span></label>`).join('')}</fieldset>
         <div id="photo-wrap" class="photo-pick" ${mine.format === 'photo' ? '' : 'hidden'}>
           <img class="thumb" id="thumb" alt="Your photo" ${photo ? `src="${photo}"` : 'hidden'}>
-          <label class="btn btn-secondary file-label" style="width:auto">${icon.camera}<span id="photo-btn">${photo ? 'Change photo' : 'Add a photo'}</span><input type="file" id="photo" accept="image/*"></label></div>
-        <textarea class="textarea" id="answer" name="answer" maxlength="280" placeholder="${esc(st.placeholder)}" ${key === 'then' && mine.note ? 'style="font:400 22px/1.2 var(--font-hand)"' : ''}>${esc(mine.text || '')}</textarea>
-        <button type="button" class="chip-btn" id="askback" aria-pressed="${mine.askBack ? 'true' : 'false'}">${icon.chat} Ask back: “${esc(st.askBack)}”</button>
+          <label class="btn btn-secondary file-label" style="width:auto;min-height:40px;padding:8px 16px">${icon.camera}<span id="photo-btn">${photo ? 'Change photo' : 'Add a photo'}</span><input type="file" id="photo" accept="image/*"></label></div>
+        <textarea class="textarea" id="answer" name="answer" maxlength="280" placeholder="${esc(st.placeholder)}" ${mine.note ? 'style="font:400 21px/1.2 var(--font-hand)"' : ''}>${esc(mine.text || '')}</textarea>
+        <div class="row" style="flex-wrap:wrap;gap:6px">
+          <button type="button" class="chip-btn" id="askback" aria-pressed="${mine.askBack ? 'true' : 'false'}" style="flex:1 1 auto">${icon.chat} Ask back: “${esc(st.askBack)}”</button>
+          ${key === 'then' ? `<button type="button" class="chip-btn" id="note-toggle" aria-pressed="${mine.note ? 'true' : 'false'}" style="flex:0 0 auto">${icon.pen} Write it as a note</button>` : ''}
+        </div>
       </form>
-      ${key === 'then' ? `<button type="button" class="card card-coral stack-sm" id="note-toggle" aria-pressed="${mine.note ? 'true' : 'false'}" style="text-align:left;cursor:pointer;gap:4px;border:0">
-        <span class="subheading">prefer words? write a short note</span><span class="small muted">Optional. ${esc(s.friendName)} can reply with a note or just a reaction.</span>
-        <span class="hand-sm">${mine.note ? 'note mode on ✓' : `dear ${esc(s.friendName.toLowerCase())}, remember when we…`}</span></button>` : ''}
       <p class="hint">${esc(st.note)}</p>`,
     actions: `<button class="btn btn-primary" type="submit" form="turn" id="submit">Add to our photostrip</button>`,
   });
 
   const answer = $('#answer');
   const submit = $('#submit');
-  const refresh = () => {
-    const ok = answer.value.trim() || photo;
-    submit.toggleAttribute('disabled', !ok);
-  };
+  const refresh = () => submit.toggleAttribute('disabled', !(answer.value.trim() || photo));
   answer.addEventListener('input', refresh);
   refresh();
 
@@ -316,16 +333,13 @@ async function stageView(id, key) {
       toast('That photo couldn’t be opened. Try another one.');
     }
   });
-  $('#askback').addEventListener('click', (e) => {
-    const b = e.currentTarget;
-    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
-  });
+  const toggle = (b) => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+  $('#askback').addEventListener('click', (e) => toggle(e.currentTarget));
   $('#note-toggle')?.addEventListener('click', (e) => {
-    const b = e.currentTarget;
-    const on = b.getAttribute('aria-pressed') !== 'true';
-    b.setAttribute('aria-pressed', String(on));
-    b.querySelector('.hand-sm').textContent = on ? 'note mode on ✓' : `dear ${s.friendName.toLowerCase()}, remember when we…`;
-    answer.style.font = on ? '400 22px/1.2 var(--font-hand)' : '';
+    toggle(e.currentTarget);
+    const on = e.currentTarget.getAttribute('aria-pressed') === 'true';
+    answer.style.font = on ? '400 21px/1.2 var(--font-hand)' : '';
+    answer.placeholder = on ? `dear ${s.friendName.toLowerCase()}, remember when we…` : st.placeholder;
     answer.focus();
   });
   $('#turn').addEventListener('submit', async (e) => {
@@ -364,12 +378,12 @@ async function nextStage(s) {
   shell({
     title: 'stage 3 · next', back: `#/s/${id}/wait/then`,
     body: `${progress('next')}
-      <div class="stack-sm" style="gap:4px"><h1 class="heading" tabindex="-1">make a new memory</h1>
-      <p class="body muted">Ideas based on what you both shared:</p></div>
-      <form id="plan" class="stack-sm" style="gap:20px">
+      <div class="stack-sm" style="gap:2px"><h1 class="heading">make a new memory</h1>
+      <p class="body muted" style="margin:0">Ideas based on what you both added:</p></div>
+      <form id="plan" class="stack-sm" style="gap:14px">
         <fieldset class="ideas"><legend class="visually-hidden">Pick an idea</legend>
           ${list.map((i, n) => `<label class="idea"><input type="radio" name="idea" value="${i.id}" ${(mine.ideaId ? mine.ideaId === i.id : n === 0) ? 'checked' : ''}>
-            <span class="txt"><span class="tag">${esc(i.tag)}</span><span class="subheading">${esc(i.title)}</span><span class="small muted">${esc(i.why)}</span></span><span class="ring" aria-hidden="true"></span></label>`).join('')}
+            <span class="txt"><span class="subheading">${esc(i.title)}</span><span class="small muted"><span class="tag">${esc(i.tag)}</span> ${esc(i.why)}</span></span><span class="ring" aria-hidden="true"></span></label>`).join('')}
         </fieldset>
         <fieldset class="chips"><legend>When works?</legend>
           ${times.map((t, n) => `<label class="chip"><input type="radio" name="time" value="${esc(t)}" ${(mine.time ? mine.time === t : n === 0) ? 'checked' : ''}><span>${esc(t)}</span></label>`).join('')}
@@ -388,7 +402,7 @@ async function nextStage(s) {
   });
 }
 
-/* ---------------- 06 waiting / reply ---------------- */
+/* ---------------- 06 waiting / their frame arrives ---------------- */
 async function waitView(id, key, signal) {
   const s = await getStripOr404(id);
   if (!s) return;
@@ -397,17 +411,23 @@ async function waitView(id, key, signal) {
   if (!me) return go(`#/s/${id}/stage/${key}`);
   const friend = s.turns[key]?.friend;
   const nextKey = ORDER[ORDER.indexOf(key) + 1];
+  const you = s.myName || 'you';
+  const isPlan = key === 'next';
 
   if (friend) {
-    const isPlan = key === 'next';
+    // Not a chat: the friend's part shows up as a new frame on the shared strip.
+    // The conversation itself carries on in their own messaging app.
     shell({
       title: `stage ${st.n} · ${st.label}`, back: `#/s/${id}/stage/${key}`,
       body: `${progress(isPlan ? 'meetup' : nextKey)}
-        <h1 class="display" tabindex="-1">${isPlan ? `${esc(s.friendName)} said yes!` : `${esc(s.friendName)} replied!`}</h1>
-        <div class="stack-sm" style="gap:12px">
-          <p class="bubble bubble-me"><span class="who">You</span>${isPlan ? esc(`${me.idea}, ${me.time}?`) : esc(me.text || 'Shared a photo')}${me.askBack ? `<br><em>${esc(me.askBack)}</em>` : ''}</p>
-          <p class="bubble bubble-them"><span class="who">${esc(s.friendName)}</span>${esc(friend.text)}</p></div>
-        ${isPlan ? tip('enc', 'nice. now go make the memory, then add a photo to finish your strip.') : ''}`,
+        <div class="stack-sm" style="gap:2px"><h1 class="display">${isPlan ? `${esc(s.friendName)}’s in!` : `${esc(s.friendName)} added theirs`}</h1>
+        <p class="body muted" style="margin:0">${isPlan ? 'Your plan is on the strip. Sort out the details wherever you two chat.' : `Their frame is on your photostrip now.${me.askBack ? ' They answered your ask-back too.' : ''}`}</p></div>
+        <div class="frames">
+          ${isPlan
+            ? frame({ who: you, stage: 'next', plan: { idea: me.idea, time: me.time } }) + frame({ who: s.friendName, stage: 'next', text: '“I’m in!”', isNew: true })
+            : frame({ who: you, stage: st.label, text: me.text, photo: me.photo }) + frame({ who: s.friendName, stage: st.label, text: friend.text, isNew: true })}
+        </div>
+        <div class="handoff">${icon.chat}<p>${isPlan ? 'Pick a time and place in your chat.' : `Something to reply to? Keep the chat going in your DMs.`}</p><a href="${IG_DM}" target="_blank" rel="noopener">Open Instagram</a></div>`,
       actions: isPlan
         ? `<a class="btn btn-primary" href="#/s/${id}/meetup">We met up · add our photo</a><a class="btn btn-tertiary" href="#/strips">Do this after the meet-up</a>`
         : `<a class="btn btn-primary" href="#/s/${id}/stage/${nextKey}">On to stage ${st.n + 1}: ${stages[nextKey].label}</a>`,
@@ -418,24 +438,23 @@ async function waitView(id, key, signal) {
   shell({
     title: 'our photostrip', back: `#/s/${id}/stage/${key}`,
     body: `${progress(key)}
-      <div class="stack-sm" style="gap:4px"><h1 class="display" tabindex="-1">sent. nice one!</h1>
-      <p class="body muted">${esc(s.friendName)} can see your ${key === 'next' ? 'plan' : 'answer'} now. Replies can take a day or two, and that’s normal.</p></div>
+      <div class="stack-sm" style="gap:2px"><h1 class="display">added. nice one!</h1>
+      <p class="body muted" style="margin:0">${esc(s.friendName)} will see your ${isPlan ? 'plan' : 'frame'} next time they open the link. Replies can take a day or two, and that’s normal.</p></div>
       <div class="polaroids" aria-hidden="true">
         <figure class="polaroid tilt-l" style="margin:0"><div class="ph">${me.photo ? `<img src="${me.photo}" alt="">` : ''}</div><figcaption>you · done</figcaption></figure>
         <figure class="polaroid tilt-r" style="margin:0"><div class="ph waiting"><span class="dots"><i></i><i></i><i></i></span></div><figcaption>${esc(s.friendName)}…</figcaption></figure></div>
-      <p class="visually-hidden" role="status" aria-live="polite">Waiting for ${esc(s.friendName)} to reply.</p>
+      <p class="visually-hidden" role="status" aria-live="polite">Waiting for ${esc(s.friendName)} to add theirs.</p>
       ${tip('ovr', 'no reply yet doesn’t mean no. life gets busy.')}
-      <div class="stack-sm"><p class="caption">While you wait</p>
-      <a class="list-row" href="#/faq">What if they reply with one word? ${icon.chevron}</a></div>`,
-    actions: `<button class="btn btn-primary" disabled>Gentle nudge available in 3 days</button>
-      ${MODE === 'demo' ? `<button class="btn btn-tertiary" id="skip">Skip the wait (demo)</button>` : `<a class="btn btn-tertiary" href="#/">Back to home</a>`}`,
+      <a class="list-row" href="#/faq">What if they reply with one word? ${icon.chevron}</a>`,
+    actions: MODE === 'demo'
+      ? `<button class="btn btn-primary" id="skip">Skip the wait (demo)</button><a class="btn btn-tertiary" href="#/">Back to home</a>`
+      : `<button class="btn btn-primary" disabled>Gentle nudge available in 3 days</button><a class="btn btn-tertiary" href="#/">Back to home</a>`,
   });
-  let delay = 6000;
   $('#skip')?.addEventListener('click', () => {
     store.waitForFriend(id, key, { delay: 0 }).then(() => location.hash.endsWith(`/wait/${key}`) && render());
   });
   try {
-    await store.waitForFriend(id, key, { delay, signal });
+    await store.waitForFriend(id, key, { delay: 6000, signal });
     if (location.hash.endsWith(`/wait/${key}`)) render();
   } catch { /* navigated away */ }
 }
@@ -448,12 +467,13 @@ async function meetupView(id) {
   shell({
     title: 'last frame', back: `#/s/${id}/wait/next`,
     body: `${progress('meetup')}
-      <h1 class="display" tabindex="-1">you met up. nice.</h1>
-      <p class="body muted">Add a photo from your ${esc(s.turns.next?.me?.idea || 'meet-up')} to finish the strip.</p>
+      <div class="stack-sm" style="gap:2px"><h1 class="display">you met up. nice.</h1>
+      <p class="body muted" style="margin:0">Add a photo from your ${esc(s.turns.next?.me?.idea || 'meet-up')} to finish the strip.</p></div>
       <div class="photo-pick"><img class="thumb" id="thumb" alt="Your meet-up photo" ${photo ? `src="${photo}"` : 'hidden'}>
         <label class="btn btn-secondary file-label" style="width:auto">${icon.camera}<span id="photo-btn">${photo ? 'Change photo' : 'Add a photo'}</span><input type="file" id="photo" accept="image/*"></label></div>
       <div class="field"><label class="label" for="cap">Caption <span class="muted">(optional)</span></label>
-        <input class="input" id="cap" maxlength="28" placeholder="e.g. badminton + supper" value="${esc(s.turns.meetup?.caption || '')}"></div>`,
+        <input class="input" id="cap" maxlength="28" placeholder="e.g. badminton + supper" value="${esc(s.turns.meetup?.caption || '')}"></div>
+      ${tip('enc', 'that’s a new memory. one tap and your strip is done.')}`,
     actions: `<button class="btn btn-primary" id="finish">Finish our photostrip</button>
       <button class="btn btn-tertiary" id="skip">No photo, use our plan instead</button>`,
   });
@@ -467,7 +487,8 @@ async function meetupView(id) {
   });
   const finish = async (withPhoto) => {
     try {
-      await store.updateStrip(id, { stage: 'done', turns: { ...(await store.getStrip(id)).turns, meetup: { photo: withPhoto ? photo : null, caption: $('#cap').value.trim() } } });
+      const cur = await store.getStrip(id);
+      await store.updateStrip(id, { stage: 'done', turns: { ...cur.turns, meetup: { photo: withPhoto ? photo : null, caption: $('#cap').value.trim() } } });
       go(`#/s/${id}/done`);
     } catch {
       toast('Your browser’s storage is full. Try a smaller photo.');
@@ -484,13 +505,12 @@ async function doneView(id) {
   shell({
     title: 'our photostrip', back: '#/strips',
     body: `${progress('done')}
-      <h1 class="display" tabindex="-1">your photostrip is done!</h1>
+      <h1 class="display">your photostrip is done!</h1>
       <div class="strip-preview"><p class="muted small" id="rendering">Making your strip…</p></div>
-      <p class="body muted">It’s private to you two. Joining the Photostrip Challenge? Share it to your Story and tag ${esc(site.igHandle)} with ${esc(site.hashtag)}.</p>
-      <p class="small muted">${MODE === 'demo' ? `In the real version, ${esc(s.friendName)} is asked first. Nothing is posted unless you both say yes.` : `${esc(s.friendName)} said yes to sharing.`}</p>`,
+      <p class="small muted" style="margin:0">It’s private to you two. For the Photostrip Challenge, share it to your Story and tag ${esc(site.igHandle)} with ${esc(site.hashtag)}.${MODE === 'demo' ? ` In the real version, ${esc(s.friendName)} is asked first.` : ''}</p>`,
     actions: `<button class="btn btn-primary" id="share" disabled>${icon.share} Share to my Story</button>
-      <div class="row"><button class="btn btn-secondary" id="download" disabled>${icon.download} Save</button>
-      <button class="btn btn-secondary" id="again">Another strip</button></div>`,
+      <div class="row"><button class="btn btn-tertiary" id="download" disabled>${icon.download} Save image</button>
+      <button class="btn btn-tertiary" id="again">Start another</button></div>`,
   });
   let blob;
   try {
@@ -531,12 +551,12 @@ async function doneView(id) {
 async function faqView() {
   shell({
     title: 'reconnecting FAQ', back: '#/',
-    body: `<h1 class="visually-hidden" tabindex="-1">Reconnecting FAQ</h1>
+    body: `<h1 class="visually-hidden">Reconnecting FAQ</h1>
       <div class="search"><label class="visually-hidden" for="q">Search the tips</label>${icon.search}
         <input class="input" id="q" type="search" placeholder="Search, e.g. ‘it’s been a year’" autocomplete="off"></div>
-      <fieldset class="chips"><legend class="visually-hidden">Filter by topic</legend>
+      <fieldset class="chips scroll"><legend class="visually-hidden">Filter by topic</legend>
         ${faqCats.map((c, i) => `<label class="chip"><input type="radio" name="cat" value="${esc(c)}" ${i === 0 ? 'checked' : ''}><span>${esc(c.toLowerCase())}</span></label>`).join('')}</fieldset>
-      <div id="list" class="stack-sm" style="gap:10px"></div>
+      <div id="list" class="stack-sm" style="gap:6px"></div>
       <p id="empty" class="muted" hidden>No match. Try “awkward”, “reply” or “meet up”.</p>`,
     actions: `<a class="btn btn-primary" href="#/start">Start a photostrip</a>`,
   });
@@ -544,16 +564,17 @@ async function faqView() {
   const draw = () => {
     const q = $('#q').value.trim().toLowerCase();
     const cat = $('input[name=cat]:checked').value;
-    const items = faq.filter((f) => (cat === 'All' || f.cat === cat) && (!q || (f.q + ' ' + f.a + ' ' + f.cat).toLowerCase().includes(q)));
+    // Searching looks across every topic; otherwise show the chosen topic.
+    const items = faq.filter((f) => (q ? (f.q + ' ' + f.a + ' ' + f.cat).toLowerCase().includes(q) : f.cat === cat));
     $('#empty').hidden = items.length > 0;
     list.innerHTML = items.map((f, i) => `<details class="faq-item" ${i === 0 && !q ? 'open' : ''}><summary>${esc(f.q)}</summary>
-      <div class="faq-body"><p class="body muted" style="margin:0">${esc(f.a)}</p>
-      <p class="bubble bubble-me" style="max-width:none"><span class="who">Try</span>${esc(f.try)}</p>
-      <button class="btn btn-tertiary" style="justify-content:flex-start;text-decoration:underline" data-use="${esc(f.id)}">Use this as my opener</button></div></details>`).join('');
+      <div class="faq-body"><p class="small muted" style="margin:0">${esc(f.a)}</p>
+      <p class="bubble bubble-me" style="max-width:none;font-size:14px"><span class="who">Try</span>${esc(f.try)}</p>
+      <button class="btn btn-tertiary" style="justify-content:flex-start;text-decoration:underline;min-height:40px;padding:6px 0" data-use="${esc(f.id)}">Use this as my opener</button></div></details>`).join('');
     $$('[data-use]', list).forEach((b) => b.addEventListener('click', () => {
       const f = faq.find((x) => x.id === b.dataset.use);
       sessionStorage.setItem('reconnect.opener', f.try);
-      toast('Saved. We’ll put it at the top of your openers.');
+      toast('Saved. It’ll be at the top of your openers.');
       go('#/start');
     }));
   };
@@ -568,8 +589,8 @@ async function stripsView() {
   const label = { invite: 'Invite not sent yet', now: 'Stage 1', then: 'Stage 2', next: 'Stage 3', meetup: 'Waiting for your meet-up photo', done: 'Done' };
   shell({
     title: 'your photostrips', back: '#/',
-    body: `<h1 class="heading" tabindex="-1">your photostrips</h1>
-      ${strips.length ? `<div class="stack-sm" style="gap:10px">${strips.map((s) => `<a class="list-row" href="#/s/${s.id}"><span><span class="subheading" style="display:block">${esc(s.friendName)}</span><span class="small muted">${label[s.stage] || ''}</span></span>${icon.chevron}</a>`).join('')}</div>`
+    body: `<h1 class="heading">your photostrips</h1>
+      ${strips.length ? `<div class="stack-sm" style="gap:8px">${strips.map((s) => `<a class="list-row" href="#/s/${s.id}"><span><span class="subheading" style="display:block">${esc(s.friendName)}</span><span class="small muted">${label[s.stage] || ''}</span></span>${icon.chevron}</a>`).join('')}</div>`
         : `${tip('ovr', 'nothing here yet. your first photostrip is one message away.')}`}`,
     actions: `<a class="btn btn-primary" href="#/start">Start a new photostrip</a>`,
   });
@@ -579,12 +600,12 @@ async function stripsView() {
 async function aboutView() {
   shell({
     title: 'about', back: '#/',
-    body: `<h1 class="heading" tabindex="-1">about this prototype</h1>
-      <p class="body">${esc(site.disclaimer)}</p>
+    body: `<h1 class="heading">about this prototype</h1>
+      <p class="body" style="margin:0">${esc(site.disclaimer)}</p>
       <div class="card stack-sm"><h2 class="subheading">Demo mode</h2>
-        <p class="body muted" style="margin:0">Everything you type and any photos you add stay in this browser on this device. Nothing is sent to a server, and your friend’s replies are simulated so you can try the full journey on your own.</p></div>
+        <p class="small muted" style="margin:0">Everything you type and any photos you add stay in this browser on this device. Nothing is sent to a server, and your friend’s side is simulated so you can try the full journey on your own.</p></div>
       <div class="card stack-sm"><h2 class="subheading">How the real version would work</h2>
-        <p class="body muted" style="margin:0">Your friend opens your link on their own phone and adds their part. Strips are private to the two of you, deleted after the pilot, and only shared publicly if you both agree.</p></div>
+        <p class="small muted" style="margin:0">Reconnect isn’t a chat app. Your friend opens your link on their own phone and adds their frame to your shared photostrip; the actual conversation stays in Instagram, Telegram or wherever you already chat. Strips are private to the two of you, deleted after the pilot, and only shared publicly if you both agree.</p></div>
       <button class="btn btn-secondary" id="reset">Clear demo data on this device</button>`,
   });
   $('#reset').addEventListener('click', async () => {
@@ -620,6 +641,7 @@ const routes = [
 ];
 
 let controller;
+let first = true;
 async function render() {
   controller?.abort();
   controller = new AbortController();
@@ -630,8 +652,9 @@ async function render() {
   if (!match) return go('#/');
   const [m, fn] = match;
   const p = fn(...m.slice(1), signal);
-  // Move focus to the new screen's heading for screen-reader and keyboard users.
-  queueMicrotask(() => setTimeout(() => $('h1')?.focus({ preventScroll: true }), 0));
+  // After navigating, move focus to the new screen so screen readers announce it.
+  if (!first) setTimeout(() => $('#main-content')?.focus({ preventScroll: true }), 0);
+  first = false;
   await p;
 }
 

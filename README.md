@@ -14,7 +14,7 @@ A mobile-first web prototype of **Reconnect**, the friendship photostrip tool fo
 3. **Send the invite:** personalised openers, editable, shared via Instagram / WhatsApp / Telegram / copy.
 4. **Friend's view:** what the friend sees when they open the link.
 5. **Stage 1 · now, Stage 2 · then, Stage 3 · next:** prompts with "ask back", photo upload, optional note, activity ideas matched to what you both wrote.
-6. **Waiting:** normal reply times, no "seen" receipts.
+6. **Waiting / their frame arrives:** the friend's part appears as a new frame on the shared strip. Reconnect has no chat; the conversation carries on in Instagram, Telegram or WhatsApp.
 7. **Photostrip done:** draws a 1080×1920 Story-sized image you can save or share (Photostrip Challenge).
 8. **Reconnecting FAQ:** searchable, curated tips, "use this as my opener".
 
@@ -41,14 +41,14 @@ To confirm before launch: the campaign hashtag (`site.hashtag`, currently `#This
 | `js/store.js` | Data layer: demo store now, swap for a real backend later |
 | `js/app.js` | Screens and routing (hash routes, e.g. `#/start`) |
 | `js/photostrip.js` | Draws the downloadable photostrip |
-| `assets/` | Self-hosted fonts (Fredoka, DM Sans, Caveat), logo, characters, icons |
+| `assets/` | Self-hosted fonts (Fredoka, DM Sans, Caveat), logo, character SVGs (Encourager, Overthinker), icons |
 
 No build step and no dependencies. GitHub Pages serves the files as they are.
 
 ## Accessibility and performance
 
 - Text contrast meets WCAG 2.2 AA (Deep Plum on cream is 7.5:1); orange, yellow and coral are never used as text colours.
-- Tap targets 44–52 px, body text 16 px, visible keyboard focus, form labels, focus moves to each screen's heading.
+- Fits a standard phone screen without scrolling (tested at 390×664 and 412×780; small phones such as the iPhone SE may scroll slightly on a few screens). Buttons 48 px, chips 36 px, inputs 16 px so iOS doesn't zoom, visible keyboard focus, form labels, focus moves to each screen's heading.
 - Respects "reduce motion". Fonts are self-hosted (no third-party requests). First load is about 250 KB.
 - Automated checks: axe-core (WCAG 2.0/2.1/2.2 A and AA) reported no violations on every screen.
 
