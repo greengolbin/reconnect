@@ -41,7 +41,7 @@ function toast(msg) {
 }
 
 function shell({ title, back, body, actions = '', docTitle }) {
-  document.title = `${docTitle || title || 'Reconnect'} · ${site.campaign}`;
+  document.title = `${docTitle || title || site.tool} · ${site.campaign}`;
   const header = title || back
     ? `<header class="topbar">
         ${back ? `<a class="icon-btn" href="${back}" aria-label="Back">${icon.back}</a>` : '<span></span>'}
@@ -112,12 +112,12 @@ async function landing() {
     ? `<a class="list-row" href="#/s/${open.id}">Continue your photostrip with ${esc(open.friendName)} ${icon.chevron}</a>`
     : strips.length ? `<a class="list-row" href="#/strips">Your photostrips (${strips.length}) ${icon.chevron}</a>` : '';
   shell({
-    docTitle: 'Reconnect',
+    docTitle: site.tool,
     body: `${demoPill()}
       ${lockup()}
       <div class="hero" aria-hidden="true"><img src="${ASSETS.ovr}" alt="" width="78" height="85"><img src="${ASSETS.enc}" alt="" width="96" height="87"></div>
       <h1 class="display">thinking of texting an <span class="highlight">old friend?</span></h1>
-      <p class="body muted" style="margin:0">They’re probably hoping to hear from you too. Reconnect makes going first feel a little less random, in three small steps.</p>
+      <p class="body muted" style="margin:0">They’re probably hoping to hear from you too. Re:frame makes going first feel a little less random, in three small steps.</p>
       <div class="card stat"><span class="stat-num">${stats.pleased}%</span>
         <div class="stack-sm" style="gap:4px"><p class="label" style="font-size:13px;line-height:18px">of youths we surveyed would be really happy if an old friend texted first. Only ${stats.thinkSame}% think their friend feels the same.</p>
         <p class="caption" style="text-transform:none;letter-spacing:0">Our survey of ${stats.n} youths aged 17 to 25</p></div></div>
@@ -524,7 +524,7 @@ async function doneView(id) {
   $('.strip-preview').innerHTML = `<img src="${url}" alt="Your photostrip with ${esc(s.friendName)}: now, then and next frames">`;
   $('#share').disabled = false;
   $('#download').disabled = false;
-  const fname = `reconnect-photostrip-${s.friendName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`;
+  const fname = `reframe-photostrip-${s.friendName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`;
   const download = () => {
     const a = document.createElement('a');
     a.href = url;
@@ -538,7 +538,7 @@ async function doneView(id) {
       try { await navigator.share({ files: [file], text: `${site.hashtag} we picked up where we left off.` }); } catch {}
     } else {
       download();
-      toast('Saved. Post it to your Story and tag Reconnect.');
+      toast(`Saved. Post it to your Story and tag ${site.igHandle}.`);
     }
   });
   $('#again').addEventListener('click', () => {
@@ -605,7 +605,7 @@ async function aboutView() {
       <div class="card stack-sm"><h2 class="subheading">Demo mode</h2>
         <p class="small muted" style="margin:0">Everything you type and any photos you add stay in this browser on this device. Nothing is sent to a server, and your friend’s side is simulated so you can try the full journey on your own.</p></div>
       <div class="card stack-sm"><h2 class="subheading">How the real version would work</h2>
-        <p class="small muted" style="margin:0">Reconnect isn’t a chat app. Your friend opens your link on their own phone and adds their frame to your shared photostrip; the actual conversation stays in Instagram, Telegram or wherever you already chat. Strips are private to the two of you, deleted after the pilot, and only shared publicly if you both agree.</p></div>
+        <p class="small muted" style="margin:0">Re:frame isn’t a chat app. Your friend opens your link on their own phone and adds their frame to your shared photostrip; the actual conversation stays in Instagram, Telegram or wherever you already chat. Strips are private to the two of you, deleted after the pilot, and only shared publicly if you both agree.</p></div>
       <button class="btn btn-secondary" id="reset">Clear demo data on this device</button>`,
   });
   $('#reset').addEventListener('click', async () => {
