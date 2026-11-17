@@ -5,11 +5,11 @@
 export const site = {
   campaign: 'This Is Random But…',
   tagline: "Let's pick up where we left off.",
-  tool: 'Re:frame',
+  tool: 're:frame',
   // TODO(team): confirm the campaign hashtag before launch.
   hashtag: '#ThisIsRandomBut',
   // TODO(team): confirm the Instagram account people should tag.
-  igHandle: 'Reconnect',
+  igHandle: '', // the account handle once the team confirms the account; leave empty to hide
   disclaimer:
     'Student project prototype for the MSF Youth and Relationships brief (Ngee Ann Polytechnic, IMP capstone). Not an official MSF service.',
 };

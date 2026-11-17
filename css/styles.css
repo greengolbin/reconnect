@@ -1,4 +1,4 @@
-/* Re:frame · This Is Random But…
+/* re:frame · This Is Random But…
    Design tokens match the v2 Figma ("Brand v2 · This is random but"). */
 
 @font-face { font-family: 'Fredoka'; font-weight: 500; font-display: swap; src: url('../assets/fonts/fredoka-latin-500-normal.woff2') format('woff2'); }
@@ -222,7 +222,7 @@ h1:focus { outline: none; }
 @keyframes blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: .9; } }
 
 .strip-preview { display: flex; justify-content: center; }
-.strip-preview img { height: min(250px, 34dvh); width: auto; border-radius: 8px; box-shadow: var(--shadow); }
+.strip-preview img { height: clamp(180px, calc(100dvh - 400px), 560px); width: auto; border-radius: 8px; box-shadow: var(--shadow); }
 
 /* ---------- Photo picker ---------- */
 .photo-pick { display: flex; align-items: center; gap: 12px; }

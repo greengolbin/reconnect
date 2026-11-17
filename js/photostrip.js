@@ -193,7 +193,7 @@ export async function renderPhotostrip(strip, assets) {
   ctx.fillText('we picked up where we left off.', W / 2, H - 170);
   ctx.font = '500 30px "DM Sans"';
   ctx.fillStyle = C.plumMuted;
-  ctx.fillText(`${assets.hashtag}  ·  made with Re:frame`, W / 2, H - 110);
+  ctx.fillText(`${assets.hashtag}  ·  made with re:frame`, W / 2, H - 110);
 
   return new Promise((res) => cv.toBlob((b) => res(b), 'image/png'));
 }

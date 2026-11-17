@@ -117,7 +117,7 @@ async function landing() {
       ${lockup()}
       <div class="hero" aria-hidden="true"><img src="${ASSETS.ovr}" alt="" width="78" height="85"><img src="${ASSETS.enc}" alt="" width="96" height="87"></div>
       <h1 class="display">thinking of texting an <span class="highlight">old friend?</span></h1>
-      <p class="body muted" style="margin:0">They’re probably hoping to hear from you too. Re:frame makes going first feel a little less random, in three small steps.</p>
+      <p class="body muted" style="margin:0">They’re probably hoping to hear from you too. re:frame makes going first feel a little less random, in three small steps.</p>
       <div class="card stat"><span class="stat-num">${stats.pleased}%</span>
         <div class="stack-sm" style="gap:4px"><p class="label" style="font-size:13px;line-height:18px">of youths we surveyed would be really happy if an old friend texted first. Only ${stats.thinkSame}% think their friend feels the same.</p>
         <p class="caption" style="text-transform:none;letter-spacing:0">Our survey of ${stats.n} youths aged 17 to 25</p></div></div>
@@ -507,7 +507,7 @@ async function doneView(id) {
     body: `${progress('done')}
       <h1 class="display">your photostrip is done!</h1>
       <div class="strip-preview"><p class="muted small" id="rendering">Making your strip…</p></div>
-      <p class="small muted" style="margin:0">It’s private to you two. For the Photostrip Challenge, share it to your Story and tag ${esc(site.igHandle)} with ${esc(site.hashtag)}.${MODE === 'demo' ? ` In the real version, ${esc(s.friendName)} is asked first.` : ''}</p>`,
+      <p class="small muted" style="margin:0">It’s private to you two. For the Photostrip Challenge, share it to your Story${site.igHandle ? ` and tag ${esc(site.igHandle)}` : ''} with ${esc(site.hashtag)}.${MODE === 'demo' ? ` In the real version, ${esc(s.friendName)} is asked first.` : ''}</p>`,
     actions: `<button class="btn btn-primary" id="share" disabled>${icon.share} Share to my Story</button>
       <div class="row"><button class="btn btn-tertiary" id="download" disabled>${icon.download} Save image</button>
       <button class="btn btn-tertiary" id="again">Start another</button></div>`,
@@ -538,7 +538,7 @@ async function doneView(id) {
       try { await navigator.share({ files: [file], text: `${site.hashtag} we picked up where we left off.` }); } catch {}
     } else {
       download();
-      toast(`Saved. Post it to your Story and tag ${site.igHandle}.`);
+      toast(`Saved. Post it to your Story with ${site.hashtag}.`);
     }
   });
   $('#again').addEventListener('click', () => {
@@ -605,7 +605,7 @@ async function aboutView() {
       <div class="card stack-sm"><h2 class="subheading">Demo mode</h2>
         <p class="small muted" style="margin:0">Everything you type and any photos you add stay in this browser on this device. Nothing is sent to a server, and your friend’s side is simulated so you can try the full journey on your own.</p></div>
       <div class="card stack-sm"><h2 class="subheading">How the real version would work</h2>
-        <p class="small muted" style="margin:0">Re:frame isn’t a chat app. Your friend opens your link on their own phone and adds their frame to your shared photostrip; the actual conversation stays in Instagram, Telegram or wherever you already chat. Strips are private to the two of you, deleted after the pilot, and only shared publicly if you both agree.</p></div>
+        <p class="small muted" style="margin:0">re:frame isn’t a chat app. Your friend opens your link on their own phone and adds their frame to your shared photostrip; the actual conversation stays in Instagram, Telegram or wherever you already chat. Strips are private to the two of you, deleted after the pilot, and only shared publicly if you both agree.</p></div>
       <button class="btn btn-secondary" id="reset">Clear demo data on this device</button>`,
   });
   $('#reset').addEventListener('click', async () => {
