@@ -1,9 +1,9 @@
-# Reconnect · This Is Random But…
+# Re:frame · This Is Random But…
 
-A mobile-first web prototype of **Reconnect**, the friendship photostrip tool for the
+A mobile-first web prototype of **Re:frame**, the friendship photostrip tool for the
 *This Is Random But…* campaign (MSF Youth and Relationships brief, Ngee Ann Polytechnic IMP capstone).
 
-**Live site:** https://greengolbin.github.io/reconnect/
+**Live site:** https://greengolbin.github.io/reframe/
 
 > Student project prototype. Not an official MSF service.
 
@@ -14,7 +14,7 @@ A mobile-first web prototype of **Reconnect**, the friendship photostrip tool fo
 3. **Send the invite:** personalised openers, editable, shared via Instagram / WhatsApp / Telegram / copy.
 4. **Friend's view:** what the friend sees when they open the link.
 5. **Stage 1 · now, Stage 2 · then, Stage 3 · next:** prompts with "ask back", photo upload, optional note, activity ideas matched to what you both wrote.
-6. **Waiting / their frame arrives:** the friend's part appears as a new frame on the shared strip. Reconnect has no chat; the conversation carries on in Instagram, Telegram or WhatsApp.
+6. **Waiting / their frame arrives:** the friend's part appears as a new frame on the shared strip. Re:frame has no chat; the conversation carries on in Instagram, Telegram or WhatsApp.
 7. **Photostrip done:** draws a 1080×1920 Story-sized image you can save or share (Photostrip Challenge).
 8. **Reconnecting FAQ:** searchable, curated tips, "use this as my opener".
 
