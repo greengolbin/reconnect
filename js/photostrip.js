@@ -52,34 +52,57 @@ function drawCover(ctx, img, x, y, w, h) {
   ctx.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, x, y, w, h);
 }
 
-function drawTextCard(ctx, x, y, w, h, lines) {
+function drawTextCard(ctx, x, y, w, h, lines, size = 40) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
   ctx.fillStyle = C.orangeTint;
   ctx.fillRect(x, y, w, h);
   // soft hills, like the placeholder in the screens
   ctx.fillStyle = 'rgba(246,170,98,0.35)';
   ctx.beginPath();
   ctx.moveTo(x, y + h);
-  ctx.lineTo(x, y + h * 0.78);
-  ctx.lineTo(x + w * 0.3, y + h * 0.6);
-  ctx.lineTo(x + w * 0.55, y + h * 0.78);
-  ctx.lineTo(x + w * 0.75, y + h * 0.66);
-  ctx.lineTo(x + w, y + h * 0.82);
+  ctx.lineTo(x, y + h * 0.9);
+  ctx.lineTo(x + w * 0.3, y + h * 0.8);
+  ctx.lineTo(x + w * 0.55, y + h * 0.9);
+  ctx.lineTo(x + w * 0.75, y + h * 0.83);
+  ctx.lineTo(x + w, y + h * 0.92);
   ctx.lineTo(x + w, y + h);
   ctx.fill();
   ctx.fillStyle = C.plum;
-  ctx.font = '700 40px Caveat';
-  ctx.textAlign = 'left';
+  ctx.font = `700 ${size}px Caveat`;
+  ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  let ty = y + 34;
-  for (const block of lines) {
-    if (!block) continue;
-    for (const l of wrap(ctx, block, w - 60).slice(0, 3)) {
-      if (ty > y + h - 60) break;
-      ctx.fillText(l, x + 30, ty);
-      ty += 46;
-    }
-    ty += 14;
+  const lh = Math.round(size * 1.12);
+  const pad = Math.round(size * 0.7);
+  const all = lines.filter(Boolean).flatMap((b) => wrap(ctx, b, w - pad * 2));
+  const max = Math.max(1, Math.floor((h * 0.8 - pad) / lh));
+  const shown = all.length > max ? [...all.slice(0, max - 1), all[max - 1].replace(/\s*\S*$/, '') + '…'] : all;
+  let ty = y + (h * 0.85 - shown.length * lh) / 2;
+  for (const l of shown) {
+    ctx.fillText(l, x + w / 2, ty);
+    ty += lh;
   }
+  ctx.restore();
+}
+
+async function drawFrame(ctx, f, x, y, w, h, size) {
+  if (f.photo) {
+    try {
+      drawCover(ctx, await loadImg(f.photo), x, y, w, h);
+      return;
+    } catch { /* fall back to text */ }
+  }
+  drawTextCard(ctx, x, y, w, h, f.lines, size);
+}
+
+function caption(ctx, text, cx, cy, size = 38) {
+  ctx.fillStyle = C.plum;
+  ctx.font = `700 ${size}px Caveat`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text.length > 30 ? text.slice(0, 29) + '…' : text, cx, cy);
 }
 
 export async function renderPhotostrip(strip, assets) {
@@ -117,12 +140,18 @@ export async function renderPhotostrip(strip, assets) {
   ctx.font = '700 40px Caveat';
   ctx.fillText("Let's pick up where we left off.", 252, 185);
 
-  // the strip
-  const sx = 250, sy = 280, sw = 580, pad = 30, fw = sw - pad * 2, fh = 360, capH = 64;
-  const sh = pad + 3 * (fh + capH) + 90;
+  // the strip: 5 frames
+  // row 1 (now): you | friend, row 2 (then): you | friend, row 3 (next): the photo you take together
+  const t = strip.turns || {};
+  const me = strip.myName || 'you';
+  const fr = strip.friendName;
+  const sx = 110, sy = 250, sw = 860, pad = 28, gap = 20, capH = 56;
+  const hw = (sw - pad * 2 - gap) / 2, hh = 300; // half-width frames
+  const fw = sw - pad * 2, fh = 390; // full-width meet-up frame
+  const sh = pad + 2 * (hh + capH) + (fh + capH) + 52 + pad;
   ctx.save();
   ctx.translate(W / 2, sy + sh / 2);
-  ctx.rotate((-2 * Math.PI) / 180);
+  ctx.rotate((-1.5 * Math.PI) / 180);
   ctx.translate(-W / 2, -(sy + sh / 2));
   ctx.shadowColor = 'rgba(105,69,91,0.22)';
   ctx.shadowBlur = 40;
@@ -132,34 +161,29 @@ export async function renderPhotostrip(strip, assets) {
   ctx.fill();
   ctx.shadowColor = 'transparent';
 
-  const t = strip.turns || {};
-  const frames = [
-    { cap: 'now', photo: t.now?.me?.photo, lines: [t.now?.me?.text && `${strip.myName || 'me'}: ${t.now.me.text}`, t.now?.friend?.text && `${strip.friendName}: ${t.now.friend.text}`] },
-    { cap: 'then', photo: t.then?.me?.photo, lines: [t.then?.me?.text, t.then?.friend?.text && `${strip.friendName}: ${t.then.friend.text}`] },
-    { cap: 'next', photo: t.meetup?.photo, lines: [t.next?.me?.idea && `${t.next.me.idea}`, t.next?.me?.time] },
-  ];
   let y = sy + pad;
-  for (const f of frames) {
-    if (f.photo) {
-      try {
-        drawCover(ctx, await loadImg(f.photo), sx + pad, y, fw, fh);
-      } catch {
-        drawTextCard(ctx, sx + pad, y, fw, fh, f.lines);
-      }
-    } else drawTextCard(ctx, sx + pad, y, fw, fh, f.lines);
-    ctx.fillStyle = C.plum;
-    ctx.font = '700 42px Caveat';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const capText = f.cap === 'next' && t.meetup?.caption ? `next · ${t.meetup.caption}` : f.cap;
-    ctx.fillText(capText.length > 34 ? capText.slice(0, 33) + '…' : capText, W / 2, y + fh + capH / 2);
-    y += fh + capH;
+  for (const stage of ['now', 'then']) {
+    const pair = [
+      { who: me, part: t[stage]?.me },
+      { who: fr, part: t[stage]?.friend },
+    ];
+    for (let i = 0; i < 2; i++) {
+      const x = sx + pad + i * (hw + gap);
+      const p = pair[i].part || {};
+      await drawFrame(ctx, { photo: p.photo, lines: [p.text] }, x, y, hw, hh, 34);
+      caption(ctx, `${stage} · ${pair[i].who}`, x + hw / 2, y + hh + capH / 2, 34);
+    }
+    y += hh + capH;
   }
-  ctx.font = '700 38px Caveat';
+  const plan = [t.next?.me?.idea, t.next?.me?.time].filter(Boolean);
+  await drawFrame(ctx, { photo: t.meetup?.photo, lines: plan }, sx + pad, y, fw, fh, 44);
+  caption(ctx, t.meetup?.caption ? `next · ${t.meetup.caption}` : 'next · together', W / 2, y + fh + capH / 2, 40);
+  y += fh + capH;
+  ctx.font = '700 34px Caveat';
   ctx.fillStyle = C.plumMuted;
   const d = new Date(strip.updatedAt || Date.now());
   const month = d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
-  ctx.fillText(`${strip.myName || 'you'} & ${strip.friendName} · ${month}`, W / 2, y + 40);
+  ctx.fillText(`${me} & ${fr} · ${month}`, W / 2, y + 18);
   ctx.restore();
 
   // footer

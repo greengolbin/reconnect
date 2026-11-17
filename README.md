@@ -15,7 +15,7 @@ A mobile-first web prototype of **Re:frame**, the friendship photostrip tool for
 4. **Friend's view:** what the friend sees when they open the link.
 5. **Stage 1 · now, Stage 2 · then, Stage 3 · next:** prompts with "ask back", photo upload, optional note, activity ideas matched to what you both wrote.
 6. **Waiting / their frame arrives:** the friend's part appears as a new frame on the shared strip. Re:frame has no chat; the conversation carries on in Instagram, Telegram or WhatsApp.
-7. **Photostrip done:** draws a 1080×1920 Story-sized image you can save or share (Photostrip Challenge).
+7. **Photostrip done:** draws a 1080×1920 Story-sized image with five frames (now and then from each of you, plus the photo you take together when you meet up) that you can save or share (Photostrip Challenge).
 8. **Reconnecting FAQ:** searchable, curated tips, "use this as my opener".
 
 ## Demo mode
